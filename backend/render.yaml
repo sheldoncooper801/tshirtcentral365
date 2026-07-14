@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tshirtcentral365-api
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2
+    healthCheckPath: /api/health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SQUARE_ENVIRONMENT
+        value: production
+      - key: PRINTIFY_API_TOKEN
+        sync: false
+      - key: PRINTIFY_SHOP_ID
+        value: "6906686"
+      - key: LOG_LEVEL
+        value: INFO

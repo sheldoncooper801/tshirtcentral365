@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push Docker images
+        run: |
+          echo "Build Docker images for production deployment"
+          echo "Configure your deployment target below:"
+          echo ""
+          echo "Option 1: Docker Compose on VPS"
+          echo "  ssh your-server 'cd /app && git pull && docker compose -f docker-compose.prod.yml up -d'"
+          echo ""
+          echo "Option 2: AWS ECS / Google Cloud Run / Azure Container Apps"
+          echo "  Push images to your container registry and deploy"
+          echo ""
+          echo "Option 3: Vercel (frontend) + Railway/Fly.io (backend)"
+          echo "  Frontend: vercel --prod"
+          echo "  Backend: fly deploy"
