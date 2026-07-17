@@ -16,6 +16,7 @@ class CatalogBlueprint(Base):
     images: Mapped[list | None] = mapped_column(JSON, nullable=True)
     category: Mapped[str | None] = mapped_column(String(100), nullable=True)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
+    starting_price: Mapped[float | None] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 

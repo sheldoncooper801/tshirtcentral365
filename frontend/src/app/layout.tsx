@@ -5,14 +5,15 @@ import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { Toaster } from "react-hot-toast";
 import ErrorBoundary from "@/components/error-boundary";
+import MobileBottomNav from "@/components/mobile-bottom-nav";
 
 export const metadata: Metadata = {
   title: {
     default: "T-Shirt Central 365 - Print on Demand Marketplace",
     template: "%s | T-Shirt Central 365",
   },
-  description: "Create and sell custom products with T-Shirt Central 365. No inventory, no risk. Design t-shirts, mugs, posters and more.",
-  keywords: ["print on demand", "custom t-shirts", "t-shirt design", "dropshipping", "merchandise"],
+  description: "Shop custom t-shirts, mugs, posters and more at T-Shirt Central 365. Design your own products or shop our curated collections.",
+  keywords: ["custom t-shirts", "print on demand", "shop custom products", "personalized gifts", "design your own"],
   authors: [{ name: "T-Shirt Central 365" }],
   metadataBase: new URL("https://www.tshirtcentral365.com"),
   openGraph: {
@@ -21,12 +22,12 @@ export const metadata: Metadata = {
     siteName: "T-Shirt Central 365",
     url: "https://www.tshirtcentral365.com",
     title: "T-Shirt Central 365 - Print on Demand Marketplace",
-    description: "Create and sell custom products. No inventory, no risk.",
+    description: "Shop custom products designed by you. Premium quality, shipped worldwide.",
   },
   twitter: {
     card: "summary_large_image",
     title: "T-Shirt Central 365",
-    description: "Create and sell custom products. No inventory, no risk.",
+    description: "Shop custom products designed by you. Premium quality, shipped worldwide.",
   },
   robots: {
     index: true,
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CartProvider>
               <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
               {children}
+              <MobileBottomNav />
             </CartProvider>
           </AuthProvider>
         </ErrorBoundary>

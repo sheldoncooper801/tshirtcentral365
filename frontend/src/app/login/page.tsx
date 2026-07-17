@@ -28,7 +28,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      router.push("/orders");
     } catch (err: any) {
       toast.error(err.message || "Login failed");
     } finally {
@@ -40,7 +40,7 @@ export default function LoginPage() {
     try {
       await loginWithGoogle(response.credential);
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      router.push("/orders");
     } catch (err: any) {
       toast.error(err.message || "Google login failed");
     }

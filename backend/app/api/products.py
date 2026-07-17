@@ -124,7 +124,6 @@ async def update_product(
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(product, field, value)
 
-    product.profit_margin = float(product.retail_price - product.base_cost)
     await db.commit()
 
     result = await db.execute(

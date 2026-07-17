@@ -8,15 +8,16 @@ import Logo from "@/components/logo";
 
 const CATEGORY_FACETS = [
   { key: "Apparel", emoji: "👕" },
+  { key: "Headwear", emoji: "🧢" },
+  { key: "Footwear", emoji: "👟" },
   { key: "Drinkware", emoji: "☕" },
   { key: "Wall Art", emoji: "🖼️" },
   { key: "Bags", emoji: "👜" },
-  { key: "Accessories", emoji: "🧢" },
+  { key: "Accessories", emoji: "💍" },
   { key: "Electronics", emoji: "📱" },
   { key: "Home", emoji: "🏠" },
   { key: "Stickers", emoji: "⭐" },
   { key: "Stationery", emoji: "✏️" },
-  { key: "Headwear", emoji: "🧢" },
 ];
 
 export default function ProductsPage() {
@@ -55,8 +56,8 @@ export default function ProductsPage() {
               className="w-full rounded-lg border-gray-200 px-4 py-2 text-sm focus:border-brand-500 focus:ring-brand-500"
             />
           </div>
-          <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 font-medium">
-            Dashboard
+          <Link href="/cart" className="text-sm text-gray-600 hover:text-gray-900 font-medium">
+            Cart
           </Link>
         </div>
       </nav>
@@ -126,9 +127,12 @@ export default function ProductsPage() {
                 <div className="p-4">
                   <h3 className="font-medium text-gray-900 text-sm group-hover:text-brand-600 transition line-clamp-2">{item.title}</h3>
                   {item.brand && <div className="text-xs text-gray-500 mt-1">{item.brand}</div>}
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center justify-between mt-2">
                     {item.category && (
                       <span className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full">{item.category}</span>
+                    )}
+                    {item.starting_price && (
+                      <span className="text-sm font-bold text-gray-900">From ${item.starting_price.toFixed(2)}</span>
                     )}
                   </div>
                 </div>

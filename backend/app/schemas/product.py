@@ -52,7 +52,6 @@ class ProductResponse(BaseModel):
     status: str
     base_cost: float
     retail_price: float
-    profit_margin: float
     mockup_urls: dict | None
     design_file_url: str | None
     tags: list | None

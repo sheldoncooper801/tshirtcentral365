@@ -51,8 +51,7 @@ export default function OrdersPage() {
             <Logo />
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/my-designs" className="text-sm text-gray-600 hover:text-gray-900 font-medium">My Designs</Link>
-            <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 font-medium">Dashboard</Link>
+            <Link href="/products" className="text-sm text-gray-600 hover:text-gray-900 font-medium">Shop</Link>
           </div>
         </div>
       </nav>

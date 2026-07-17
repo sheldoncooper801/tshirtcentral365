@@ -7,6 +7,26 @@ from app.services.printify import PrintifyClient
 logger = logging.getLogger("tsc365")
 
 
+async def _resolve_best_provider(blueprint_id: int, variant_id: int) -> tuple[int, int] | None:
+    """Auto-select the best Printify provider for a blueprint.
+
+    Returns (provider_id, variant_id) or None if no provider found.
+    """
+    client = PrintifyClient()
+    try:
+        providers = await client.list_blueprint_providers(blueprint_id)
+        if not providers:
+            return None
+        best = providers[0]
+        provider_id = best.get("id")
+        if not provider_id:
+            return None
+        return (provider_id, variant_id)
+    except Exception as e:
+        logger.error(f"Failed to resolve provider for blueprint {blueprint_id}: {e}")
+        return None
+
+
 async def create_printify_fulfillment(order: Order, db: AsyncSession) -> dict | None:
     """Create a Printify order to fulfill a customer order.
 
@@ -22,12 +42,21 @@ async def create_printify_fulfillment(order: Order, db: AsyncSession) -> dict | 
 
     line_items = []
     for item in order.items:
-        if item.printify_variant_id and item.printify_provider_id:
+        provider_id = item.printify_provider_id
+        variant_id = item.printify_variant_id
+
+        # Auto-resolve provider if not set
+        if not provider_id and item.printify_blueprint_id:
+            resolved = await _resolve_best_provider(item.printify_blueprint_id, variant_id)
+            if resolved:
+                provider_id, variant_id = resolved
+
+        if variant_id and provider_id:
             line_items.append({
-                "product_id": str(item.printify_variant_id),
-                "variant_id": item.printify_variant_id,
+                "product_id": str(variant_id),
+                "variant_id": variant_id,
                 "quantity": item.quantity,
-                "print_provider_id": item.printify_provider_id,
+                "print_provider_id": provider_id,
                 "blueprint_id": item.printify_blueprint_id,
             })
 

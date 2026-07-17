@@ -44,8 +44,8 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">3. Products &amp; Orders</h2>
             <p>
-              The Platform enables you to create, list, and sell print-on-demand products. Product descriptions, images, and
-              pricing are your responsibility. We facilitate order fulfillment through third-party print providers but do not
+              The Platform enables you to browse, customize, and purchase print-on-demand products. Product descriptions, images, and
+              pricing are set by T-Shirt Central 365. We facilitate order fulfillment through third-party print providers but do not
               guarantee delivery timelines. All sales are subject to availability and fulfillment partner capacity.
             </p>
           </section>

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import re
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, or_
@@ -88,6 +89,7 @@ async def list_catalog(
                 "images": i.images or [],
                 "category": i.category,
                 "is_featured": i.is_featured,
+                "starting_price": i.starting_price,
             }
             for i in items
         ],
@@ -114,6 +116,7 @@ async def get_catalog_item(printify_id: int, db: AsyncSession = Depends(get_db))
         "images": item.images or [],
         "category": item.category,
         "is_featured": item.is_featured,
+        "starting_price": item.starting_price,
     }
 
 
@@ -154,37 +157,46 @@ async def sync_catalog(request: Request, current_user: User = Depends(get_curren
                 row = existing.scalar_one_or_none()
 
                 images = bp.get("images", []) or []
-                desc = bp.get("description", "") or ""
+                desc = re.sub(r"<[^>]+>", " ", bp.get("description", "") or "")
+                desc = re.sub(r"\s+", " ", desc).strip()
                 title = bp.get("title", "") or ""
                 brand = bp.get("brand", "") or ""
                 title_lower = title.lower()
 
                 category = "Apparel"
-                if any(w in title_lower for w in ["mug", "cup"]):
+                if any(w in title_lower for w in ["mug", "cup", "tumbler", "bottle", "stein", "flask", "wine tumbler"]):
                     category = "Drinkware"
-                elif any(w in title_lower for w in ["phone case", "iphone", "samsung"]):
+                elif any(w in title_lower for w in ["phone case", "iphone", "samsung", "airpod", "case", "phone skin", "grip", "mouse pad"]):
                     category = "Electronics"
-                elif any(w in title_lower for w in ["poster", "canvas", "wall art", "framed"]):
+                elif any(w in title_lower for w in ["poster", "canvas", "wall art", "framed", "acrylic print", "metal print", "wood print", "banner", "yard sign", "tapestry"]):
                     category = "Wall Art"
-                elif any(w in title_lower for w in ["bag", "tote", "backpack"]):
+                elif any(w in title_lower for w in ["bag", "tote", "backpack", "fanny", "pouch", "duffle", "drawstring", "luggage"]):
                     category = "Bags"
-                elif any(w in title_lower for w in ["hat", "cap", "beanie", "visor"]):
+                elif any(w in title_lower for w in ["hat", "cap", "beanie", "visor", "beret", "headband", "balaclava", "trucker"]):
                     category = "Headwear"
-                elif any(w in title_lower for w in ["sock", "legging", "jogger"]):
+                elif any(w in title_lower for w in ["sock", "legging", "bracelet", "bangle", "keychain", "bandana", "scarf", "face mask", "lanyard", "wristband"]):
                     category = "Accessories"
-                elif any(w in title_lower for w in ["pillow", "blanket", "throw"]):
+                elif any(w in title_lower for w in ["pillow", "blanket", "throw", "towel", "magnet", "coaster", "rug", "doormat", "apron", "flag", "ornament", "candle", "tray", "serving", "bamboo", "pet", "yoga mat", "duvet", "bed"]):
                     category = "Home"
                 elif any(w in title_lower for w in ["sticker", "label", "decal"]):
                     category = "Stickers"
-                elif any(w in title_lower for w in ["book", "journal", "notebook", "planner"]):
+                elif any(w in title_lower for w in ["notebook", "journal", "planner", "pen", "bookmark", "greeting card", "calendar", "notepad"]):
                     category = "Stationery"
-                elif any(w in title_lower for w in ["shoe", "slide", "slipper"]):
+                elif any(w in title_lower for w in ["shoe", "slide", "slipper", "sneaker", "boot", "sandal", "eva foam", "clog"]):
                     category = "Footwear"
 
                 featured = any(w in title_lower for w in [
                     "t-shirt", "tee", "hoodie", "sweatshirt", "pullover",
                     "mug", "poster", "phone case", "tote", "cap",
                 ])
+
+                price_map = {
+                    "Apparel": 24.99, "Drinkware": 16.99, "Wall Art": 22.99,
+                    "Bags": 27.99, "Electronics": 22.99, "Headwear": 19.99,
+                    "Accessories": 16.99, "Home": 21.99, "Stickers": 5.99,
+                    "Stationery": 14.99, "Footwear": 34.99,
+                }
+                starting = price_map.get(category, 19.99)
 
                 if row:
                     row.title = title
@@ -194,6 +206,8 @@ async def sync_catalog(request: Request, current_user: User = Depends(get_curren
                     row.images = images
                     row.category = category
                     row.is_featured = featured
+                    if not row.starting_price:
+                        row.starting_price = starting
                 else:
                     db.add(CatalogBlueprint(
                         printify_id=bp["id"],
@@ -204,6 +218,7 @@ async def sync_catalog(request: Request, current_user: User = Depends(get_curren
                         images=images,
                         category=category,
                         is_featured=featured,
+                        starting_price=starting,
                     ))
                 total_synced += 1
 

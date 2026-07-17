@@ -126,7 +126,6 @@ function DesignerPageInner() {
   const [retailPrice, setRetailPrice] = useState("29.99");
   const [tags, setTags] = useState("");
   const [creating, setCreating] = useState(false);
-  const [publishing, setPublishing] = useState(false);
   const [savingDesign, setSavingDesign] = useState(false);
 
   const [previewColor, setPreviewColor] = useState<string>("");
@@ -396,44 +395,22 @@ function DesignerPageInner() {
       toast.error("Complete all steps first");
       return;
     }
+    let matchedVariant = variants?.variants?.[0];
+    if (selectedVariantId) {
+      matchedVariant = variants?.variants?.find((v: any) => v.id === selectedVariantId) || matchedVariant;
+    }
+    const variantPrice = matchedVariant?.price ? matchedVariant.price / 100 : 0;
     setCreating(true);
     try {
-      const baseCost = parseFloat(retailPrice) * 0.4;
       const product = await api.post<any>("/api/products", {
-        title, description, base_cost: baseCost,
-        retail_price: parseFloat(retailPrice),
+        title, description, base_cost: variantPrice,
+        retail_price: variantPrice,
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       });
       toast.success("Product created! ID: " + product.id);
-      router.push("/dashboard");
+      router.push("/orders");
     } catch (err: any) { toast.error(err.message || "Failed"); }
     finally { setCreating(false); }
-  };
-
-  const publishToPrintify = async () => {
-    if (!selectedProduct || !title || !selectedProviderId) {
-      toast.error("Complete all steps first");
-      return;
-    }
-    const allVariants: any[] = variants?.variants || [];
-    const sizeVariants = allVariants.filter((v: any) => v.options?.size === selectedSize);
-    const variantIds = sizeVariants.length > 0 ? sizeVariants.map((v: any) => v.id) : allVariants.slice(0, 5).map((v: any) => v.id);
-    if (variantIds.length === 0) { toast.error("No variants available"); return; }
-    setPublishing(true);
-    try {
-      const result = await api.post<any>("/api/printify/publish-from-designer", {
-        title, description,
-        blueprint_id: selectedProduct.id,
-        print_provider_id: Number(selectedProviderId),
-        image_url: designUrl || selectedProduct.images?.[0] || "",
-        variant_ids: variantIds,
-        tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
-        publish_immediately: false,
-      });
-      toast.success("Published to Printify! Product ID: " + result.id);
-      router.push("/printify/products");
-    } catch (err: any) { toast.error(err.message || "Failed to publish"); }
-    finally { setPublishing(false); }
   };
 
   const addDesignToCart = () => {
@@ -446,6 +423,7 @@ function DesignerPageInner() {
     if (selectedVariantId) {
       matchedVariant = variants?.variants?.find((v: any) => v.id === selectedVariantId) || matchedVariant;
     }
+    const cartPrice = matchedVariant?.price ? matchedVariant.price / 100 : parseFloat(retailPrice);
     addItem({
       id: Date.now(),
       blueprintId: selectedProduct.id,
@@ -457,7 +435,7 @@ function DesignerPageInner() {
         title: matchedVariant?.title || "",
         options: matchedVariant?.options || {},
       },
-      price: parseFloat(retailPrice),
+      price: cartPrice,
       quantity: 1,
       designFileUrl: designUrl || "",
     });
@@ -516,7 +494,7 @@ function DesignerPageInner() {
             {step > 1 ? "Back" : "Exit"}
           </button>
           <span className="font-semibold text-gray-900">Product Designer</span>
-          <Link href="/printify/catalog" className="text-sm text-brand-600 hover:text-brand-700 font-medium">Browse Catalog</Link>
+          <Link href="/products" className="text-sm text-brand-600 hover:text-brand-700 font-medium">Shop</Link>
         </div>
       </nav>
 
@@ -1027,7 +1005,7 @@ function DesignerPageInner() {
                   <svg className="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   <div>
                     <div className="text-sm font-medium text-green-800">{currentVariant.title}</div>
-                    <div className="text-xs text-green-600">Base cost: ${(currentVariant.price / 100).toFixed(2)}</div>
+                    <div className="text-xs text-green-600">Price: ${(currentVariant.price / 100).toFixed(2)}</div>
                   </div>
                 </div>
               )}
@@ -1063,23 +1041,30 @@ function DesignerPageInner() {
 
         {step === 5 && (
           <div className="max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Set your price</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Order summary</h2>
             <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <span className="text-gray-600">Base cost (T-Shirt Central 365 fee)</span>
-                  <span className="font-medium text-gray-900">${(parseFloat(retailPrice) * 0.4).toFixed(2)}</span>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Retail price</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                    <input type="number" step="0.01" min="0" value={retailPrice} onChange={(e) => setRetailPrice(e.target.value)} className="w-full rounded-lg border-gray-300 pl-8 pr-4 py-2.5 border focus:border-brand-500 focus:ring-brand-500 text-lg font-medium" />
+                {currentVariant && (
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <span className="text-gray-600">Product</span>
+                    <span className="font-medium text-gray-900">{currentVariant.title || selectedProduct?.title}</span>
                   </div>
-                </div>
-                <div className="flex items-center justify-between py-3 bg-green-50 rounded-lg px-4">
-                  <span className="text-green-700 font-medium">Your profit per sale</span>
-                  <span className="text-green-700 font-bold text-lg">${(parseFloat(retailPrice) * 0.6).toFixed(2)}</span>
+                )}
+                {selectedProviderId && (
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                    <span className="text-gray-600">Print provider</span>
+                    <span className="font-medium text-gray-900">{providers.find((p: any) => String(p.id) === selectedProviderId)?.title || "Auto-selected"}</span>
+                  </div>
+                )}
+                {currentVariant && (
+                  <div className="flex items-center justify-between py-3 bg-gray-50 rounded-lg px-4">
+                    <span className="text-gray-700 font-medium">Price</span>
+                    <span className="text-gray-900 font-bold text-lg">${(currentVariant.price / 100).toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-sm text-gray-500">Free shipping on orders over $50</span>
+                  <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Included</span>
                 </div>
               </div>
             </div>
@@ -1114,9 +1099,6 @@ function DesignerPageInner() {
                 </button>
                 <button onClick={createProduct} disabled={creating || !title || !designUrl} className="px-8 py-2.5 bg-brand-600 text-white rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 transition">
                   {creating ? "Creating..." : "Create Product"}
-                </button>
-                <button onClick={publishToPrintify} disabled={publishing || !title || !designUrl || !selectedProviderId} className="px-8 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 disabled:opacity-50 transition">
-                  {publishing ? "Publishing..." : "Publish to Printify"}
                 </button>
               </div>
             )}

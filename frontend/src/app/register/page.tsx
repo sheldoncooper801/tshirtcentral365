@@ -17,7 +17,6 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("seller");
   const [loading, setLoading] = useState(false);
   const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
@@ -33,7 +32,7 @@ export default function RegisterPage() {
     try {
       await register(email, password, fullName);
       toast.success("Account created!");
-      router.push("/dashboard");
+      router.push("/products");
     } catch (err: any) {
       toast.error(err.message || "Registration failed");
     } finally {
@@ -45,7 +44,7 @@ export default function RegisterPage() {
     try {
       await loginWithGoogle(response.credential);
       toast.success("Account created!");
-      router.push("/dashboard");
+      router.push("/products");
     } catch (err: any) {
       toast.error(err.message || "Google sign-up failed");
     }
@@ -143,33 +142,6 @@ export default function RegisterPage() {
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 sm:text-sm px-4 py-2.5 border"
                 placeholder="Min 8 characters"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">I want to...</label>
-              <div className="mt-2 grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole("seller")}
-                  className={`px-4 py-3 rounded-lg border-2 text-sm font-medium transition ${
-                    role === "seller"
-                      ? "border-brand-600 bg-brand-50 text-brand-700"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  Sell Products
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("provider")}
-                  className={`px-4 py-3 rounded-lg border-2 text-sm font-medium transition ${
-                    role === "provider"
-                      ? "border-brand-600 bg-brand-50 text-brand-700"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  Be a Provider
-                </button>
-              </div>
             </div>
             <button
               type="submit"

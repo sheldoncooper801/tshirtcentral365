@@ -6,7 +6,7 @@ export function EmptyProducts() {
       <div className="text-6xl mb-4">👕</div>
       <h3 className="text-lg font-semibold text-gray-900 mb-2">No products yet</h3>
       <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-        Start creating custom products to sell in your store.
+        Browse our catalog and add your first product to get started.
       </p>
       <Link
         href="/designer"
@@ -24,7 +24,7 @@ export function EmptyOrders() {
       <div className="text-6xl mb-4">📦</div>
       <h3 className="text-lg font-semibold text-gray-900 mb-2">No orders yet</h3>
       <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-        When customers place orders, they will appear here.
+        Your order history will appear here once you make a purchase.
       </p>
       <Link
         href="/products"
