@@ -79,8 +79,8 @@ export default function ProductDetailPage() {
   const canAddToCart = !!selectedVariantObj;
   const retailPrice = selectedVariantObj?.price ? (selectedVariantObj.price / 100).toFixed(2) : "0.00";
 
-  const colorKey = Object.keys(optionGroups).find((k) => k.toLowerCase() === "color");
-  const sizeKey = Object.keys(optionGroups).find((k) => k.toLowerCase() === "size");
+  const colorKey: string | undefined = Object.keys(optionGroups).find((k) => k.toLowerCase() === "color");
+  const sizeKey: string | undefined = Object.keys(optionGroups).find((k) => k.toLowerCase() === "size");
   const colors = colorKey ? optionGroups[colorKey] : [];
   const sizes = sizeKey ? optionGroups[sizeKey] : [];
 
@@ -101,29 +101,31 @@ export default function ProductDetailPage() {
   };
 
   const selectColor = (color: string) => {
+    if (!colorKey) return;
     const sizeVal = sizeKey ? selectedVariantObj?.options?.[sizeKey] : null;
     const match = allVariants.find((v: any) => {
-      const matchColor = v.options?.[colorKey] === color;
-      const matchSize = sizeVal ? v.options?.[sizeKey] === sizeVal : true;
+      const matchColor = v.options?.[colorKey as string] === color;
+      const matchSize = sizeKey && sizeVal ? v.options?.[sizeKey as string] === sizeVal : true;
       return matchColor && matchSize;
     });
     if (match) setSelectedVariantId(String(match.id));
     else {
-      const anyMatch = allVariants.find((v: any) => v.options?.[colorKey] === color);
+      const anyMatch = allVariants.find((v: any) => v.options?.[colorKey as string] === color);
       if (anyMatch) setSelectedVariantId(String(anyMatch.id));
     }
   };
 
   const selectSize = (size: string) => {
+    if (!sizeKey) return;
     const colorVal = colorKey ? selectedVariantObj?.options?.[colorKey] : null;
     const match = allVariants.find((v: any) => {
-      const matchSize = v.options?.[sizeKey] === size;
-      const matchColor = colorVal ? v.options?.[colorKey] === colorVal : true;
+      const matchSize = v.options?.[sizeKey as string] === size;
+      const matchColor = colorKey && colorVal ? v.options?.[colorKey as string] === colorVal : true;
       return matchSize && matchColor;
     });
     if (match) setSelectedVariantId(String(match.id));
     else {
-      const anyMatch = allVariants.find((v: any) => v.options?.[sizeKey] === size);
+      const anyMatch = allVariants.find((v: any) => v.options?.[sizeKey as string] === size);
       if (anyMatch) setSelectedVariantId(String(anyMatch.id));
     }
   };
@@ -191,7 +193,7 @@ export default function ProductDetailPage() {
                 <div className="text-sm font-semibold text-gray-900 mb-3">Colors &middot; {colors.length}</div>
                 <div className="flex flex-wrap gap-2">
                   {colors.map((color) => {
-                    const isSelected = selectedVariantObj?.options?.[colorKey] === color;
+                    const isSelected = selectedVariantObj?.options?.[colorKey!] === color;
                     return (
                       <button
                         key={color}
@@ -214,7 +216,7 @@ export default function ProductDetailPage() {
                 <div className="text-sm font-semibold text-gray-900 mb-3">Sizes &middot; {sizes.length}</div>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((size) => {
-                    const isSelected = selectedVariantObj?.options?.[sizeKey] === size;
+                    const isSelected = selectedVariantObj?.options?.[sizeKey!] === size;
                     return (
                       <button
                         key={size}
