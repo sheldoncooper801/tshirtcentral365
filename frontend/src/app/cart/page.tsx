@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/logo";
 import { getCostConfig } from "@/lib/costs";
@@ -68,9 +69,11 @@ export default function CartPage() {
             <div className="lg:col-span-2 space-y-4">
               {items.map((item) => (
                 <div key={item.variant.id} className="bg-white rounded-xl border border-gray-100 p-5 flex gap-5">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.title}
+                    width={48}
+                    height={48}
                     className="w-12 h-12 rounded-lg object-cover flex-shrink-0 bg-gray-100"
                   />
                   <div className="flex-1 min-w-0">

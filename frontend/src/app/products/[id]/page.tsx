@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
                     onClick={() => setSelectedImage(i)}
                     className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition ${selectedImage === i ? "border-gray-900" : "border-gray-200 hover:border-gray-400"}`}
                   >
-                    <div className="relative w-full h-full"><Image src={img} alt="" fill className="object-cover" sizes="80px" /></div>
+                    <div className="relative w-full h-full"><Image src={img} alt={`${product.title} view ${i + 1}`} fill className="object-cover" sizes="80px" /></div>
                   </button>
                 ))}
               </div>

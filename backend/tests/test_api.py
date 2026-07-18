@@ -177,7 +177,7 @@ async def test_orders_list(client, auth_token):
 
 async def test_webhook_no_crash(client):
     resp = await client.post("/api/payments/webhook", json={"type": "test"})
-    assert resp.status_code == 200
+    assert resp.status_code == 503
 
 
 async def test_payment_config_includes_costs(client):

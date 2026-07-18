@@ -8,7 +8,8 @@ export async function getCostConfig(): Promise<{ taxRate: number; shippingCost: 
     return { taxRate: cachedConfig.tax_rate, shippingCost: cachedConfig.shipping_cost };
   }
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/payments/config`);
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "";
+    const res = await fetch(`${apiBase}/api/payments/config`);
     if (!res.ok) throw new Error("Failed to fetch config");
     const data = await res.json();
     cachedConfig = { tax_rate: data.tax_rate, shipping_cost: data.shipping_cost };

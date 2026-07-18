@@ -11,7 +11,7 @@ from app.models.order import Order, OrderItem
 from app.models.product import Product, ProductVariant
 from app.schemas.order import (
     OrderCreate, OrderResponse, OrderListResponse,
-    OrderStatusUpdate, OrderItemResponse,
+    OrderStatusUpdate,
 )
 from app.core.costs import TAX_RATE, SHIPPING_COST, MIN_PAYABLE_AMOUNT, MAX_PAYABLE_AMOUNT
 

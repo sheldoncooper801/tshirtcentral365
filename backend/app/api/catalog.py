@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timezone
 import re
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -9,6 +10,7 @@ from app.models.user import User
 from app.models.catalog import CatalogBlueprint, CatalogSyncLog
 from app.services.printify import PrintifyClient
 
+logger = logging.getLogger("tsc365")
 router = APIRouter()
 from app.core.limiter import limiter
 
@@ -237,6 +239,7 @@ async def sync_catalog(request: Request, current_user: User = Depends(get_curren
         log.status = "failed"
         log.finished_at = datetime.now(timezone.utc)
         await db.commit()
-        raise HTTPException(status_code=500, detail=f"Sync failed: {str(e)}")
+        logger.error(f"Catalog sync failed: {e}")
+        raise HTTPException(status_code=500, detail="Sync failed. Please try again later.")
 
     return {"status": "completed", "total_synced": total_synced}

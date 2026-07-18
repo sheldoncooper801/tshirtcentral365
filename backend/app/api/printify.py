@@ -77,7 +77,8 @@ async def list_shops(current_user: User = Depends(get_current_user)):
     try:
         return await client.list_shops()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/blueprints")
@@ -90,7 +91,8 @@ async def list_blueprints(
     try:
         return await client.list_blueprints(page=page, limit=limit)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/blueprints/{blueprint_id}")
@@ -99,7 +101,8 @@ async def get_blueprint(blueprint_id: int, current_user: User = Depends(get_curr
     try:
         return await client.get_blueprint(blueprint_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/blueprints/{blueprint_id}/providers")
@@ -108,7 +111,8 @@ async def list_blueprint_providers(blueprint_id: int, current_user: User = Depen
     try:
         return await client.list_blueprint_providers(blueprint_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/blueprints/{blueprint_id}/providers/{provider_id}/variants")
@@ -119,7 +123,8 @@ async def get_blueprint_variants(
     try:
         return await client.get_blueprint_variants(blueprint_id, provider_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/blueprints/{blueprint_id}/providers/{provider_id}/shipping")
@@ -130,7 +135,8 @@ async def get_blueprint_shipping(
     try:
         return await client.get_blueprint_shipping(blueprint_id, provider_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/providers")
@@ -139,7 +145,8 @@ async def list_print_providers(current_user: User = Depends(get_current_user)):
     try:
         return await client.list_print_providers()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/catalog/providers/{provider_id}")
@@ -148,7 +155,8 @@ async def get_print_provider(provider_id: int, current_user: User = Depends(get_
     try:
         return await client.get_print_provider(provider_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/products")
@@ -161,7 +169,8 @@ async def list_products(
     try:
         return await client.list_products(page=page, limit=limit)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/products/{product_id}")
@@ -170,7 +179,8 @@ async def get_product(product_id: str, current_user: User = Depends(get_current_
     try:
         return await client.get_product(product_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/products")
@@ -193,7 +203,8 @@ async def create_product(data: ProductCreateRequest, current_user: User = Depend
     try:
         return await client.create_product(product_data)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.put("/products/{product_id}")
@@ -212,7 +223,8 @@ async def update_product(
     try:
         return await client.update_product(product_id, product_data)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.delete("/products/{product_id}")
@@ -222,7 +234,8 @@ async def delete_product(product_id: str, current_user: User = Depends(get_curre
         await client.delete_product(product_id)
         return {"status": "deleted"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/products/{product_id}/publish")
@@ -231,7 +244,8 @@ async def publish_product(product_id: str, current_user: User = Depends(get_curr
     try:
         return await client.publish_product(product_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 class PublishFromDesignerRequest(BaseModel):
@@ -273,7 +287,8 @@ async def publish_from_designer(data: PublishFromDesignerRequest, current_user: 
 
         return product
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/uploads/image")
@@ -282,7 +297,8 @@ async def upload_image(data: ImageUploadRequest, current_user: User = Depends(ge
     try:
         return await client.upload_image(image_url=data.url, contents=data.contents)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/orders")
@@ -296,7 +312,8 @@ async def list_orders(
     try:
         return await client.list_orders(page=page, limit=limit, status=status)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/orders/{order_id}")
@@ -305,7 +322,8 @@ async def get_order(order_id: str, current_user: User = Depends(get_current_user
     try:
         return await client.get_order(order_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/orders")
@@ -319,7 +337,8 @@ async def create_order(data: OrderCreateRequest, current_user: User = Depends(ge
     try:
         return await client.create_order(order_data)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/orders/shipping")
@@ -333,7 +352,8 @@ async def calculate_shipping(data: OrderCreateRequest, current_user: User = Depe
     try:
         return await client.calculate_shipping(order_data)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/orders/{order_id}/production")
@@ -342,7 +362,8 @@ async def send_to_production(order_id: str, current_user: User = Depends(get_cur
     try:
         return await client.send_to_production(order_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/orders/{order_id}/cancel")
@@ -351,7 +372,8 @@ async def cancel_order(order_id: str, current_user: User = Depends(get_current_u
     try:
         return await client.cancel_order(order_id)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.get("/webhooks")
@@ -360,7 +382,8 @@ async def list_webhooks(current_user: User = Depends(get_current_user)):
     try:
         return await client.list_webhooks()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/webhooks")
@@ -369,7 +392,8 @@ async def create_webhook(data: WebhookCreate, current_user: User = Depends(get_c
     try:
         return await client.create_webhook(data.topic, data.url)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.delete("/webhooks/{webhook_id}")
@@ -379,7 +403,8 @@ async def delete_webhook(webhook_id: str, current_user: User = Depends(get_curre
         await client.delete_webhook(webhook_id)
         return {"status": "deleted"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Printify proxy error: {e}")
+        raise HTTPException(status_code=500, detail="Service temporarily unavailable")
 
 
 @router.post("/webhook-receive")

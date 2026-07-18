@@ -1,3 +1,4 @@
+import logging
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +9,7 @@ from app.models.user import User
 from app.models.store import StoreConnection
 from app.schemas.store import StoreConnect, StoreConnectionResponse, StoreListResponse
 
+logger = logging.getLogger("tsc365")
 router = APIRouter()
 from app.core.limiter import limiter
 
@@ -207,7 +209,8 @@ async def _sync_wix(conn: StoreConnection):
             params={"limit": 50},
         )
         if resp.status_code != 200:
-            raise HTTPException(status_code=400, detail=f"Wix API error: {resp.status_code} {resp.text[:200]}")
+            logger.error(f"Wix API error: {resp.status_code}")
+            raise HTTPException(status_code=400, detail="Wix API request failed")
         data = resp.json()
         orders = data.get("orders", [])
         return {"orders_synced": len(orders)}

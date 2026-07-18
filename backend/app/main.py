@@ -20,6 +20,10 @@ logger = setup_logging(settings.LOG_LEVEL)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
+
+    if not settings.SECRET_KEY:
+        raise RuntimeError("SECRET_KEY environment variable is required. Set a random 64-char hex string.")
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     logger.info("Database initialized")
@@ -135,9 +139,9 @@ async def health(request: Request):
         async with async_session() as session:
             await session.execute(text("SELECT 1"))
         health_status["checks"]["database"] = "ok"
-    except Exception as e:
+    except Exception:
         health_status["status"] = "degraded"
-        health_status["checks"]["database"] = f"error: {str(e)}"
+        health_status["checks"]["database"] = "error"
 
     health_status["checks"]["square"] = "configured" if settings.SQUARE_ACCESS_TOKEN else "not_configured"
     health_status["checks"]["printify"] = "configured" if settings.PRINTIFY_API_TOKEN else "not_configured"

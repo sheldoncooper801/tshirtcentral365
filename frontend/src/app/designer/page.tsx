@@ -521,7 +521,7 @@ function DesignerPageInner() {
         {step === 1 && (
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Choose a product</h2>
-            <p className="text-gray-500 mb-6">Browse by category or search from 1,691 products</p>
+            <p className="text-gray-500 mb-6">Browse by category or search from our product catalog</p>
 
             {!browseCategory && (
               <div className="mb-8">
@@ -649,7 +649,7 @@ function DesignerPageInner() {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload your design</h2>
               {selectedProduct && (
                 <div className="flex items-center gap-3 mb-4 p-3 bg-white rounded-lg border border-gray-100">
-                  {selectedProduct.images?.[0] && <NextImage src={selectedProduct.images[0]} alt="" width={48} height={48} className="w-12 h-12 rounded-lg object-cover" />}
+                  {selectedProduct.images?.[0] && <NextImage src={selectedProduct.images[0]} alt={selectedProduct.title} width={48} height={48} className="w-12 h-12 rounded-lg object-cover" />}
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-gray-900 text-sm truncate">{selectedProduct.title}</div>
                     <div className="text-xs text-gray-500">{selectedProduct.brand}</div>

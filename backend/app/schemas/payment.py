@@ -10,9 +10,3 @@ class CheckoutResponse(BaseModel):
     payment_id: str
     status: str
     order_id: int
-
-
-class PaymentIntentResponse(BaseModel):
-    payment_id: str
-    amount: int
-    currency: str
