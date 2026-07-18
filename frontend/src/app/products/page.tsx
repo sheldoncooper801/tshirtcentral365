@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -284,6 +285,8 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <ProductsContent />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full" /></div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
