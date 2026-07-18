@@ -8,8 +8,8 @@ import { useCart } from "@/lib/cart-context";
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { items } = useCart();
-  const cartCount = items?.length || 0;
+  const { items, getItemCount } = useCart();
+  const cartCount = getItemCount();
 
   const links = [
     {

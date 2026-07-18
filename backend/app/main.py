@@ -165,7 +165,9 @@ UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 @app.get("/uploads/{file_path:path}")
 async def serve_upload(file_path: str):
     from fastapi.responses import FileResponse
-    full_path = os.path.join(UPLOAD_DIR, file_path)
+    full_path = os.path.normpath(os.path.join(UPLOAD_DIR, file_path))
+    if not full_path.startswith(os.path.normpath(UPLOAD_DIR)):
+        return JSONResponse(status_code=400, content={"detail": "Invalid path"})
     if os.path.isfile(full_path):
         return FileResponse(full_path)
     return JSONResponse(status_code=404, content={"detail": "File not found"})

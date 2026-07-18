@@ -394,16 +394,19 @@ async def receive_webhook(request: Request):
     topic = request.headers.get("X-Printify-Topic", "unknown")
 
     webhook_secret = getattr(settings, "PRINTIFY_WEBHOOK_SECRET", "")
-    if webhook_secret:
-        signature = request.headers.get("X-Printify-Signature", "")
-        expected = hmac.new(
-            webhook_secret.encode("utf-8"),
-            raw_body,
-            hashlib.sha256,
-        ).hexdigest()
-        if not hmac.compare_digest(expected, signature):
-            logger.warning("Printify webhook signature verification failed")
-            return {"status": "invalid_signature"}
+    if not webhook_secret:
+        logger.error("PRINTIFY_WEBHOOK_SECRET not configured — rejecting webhook")
+        return {"status": "error", "detail": "Webhook not configured"}
+
+    signature = request.headers.get("X-Printify-Signature", "")
+    expected = hmac.new(
+        webhook_secret.encode("utf-8"),
+        raw_body,
+        hashlib.sha256,
+    ).hexdigest()
+    if not hmac.compare_digest(expected, signature):
+        logger.warning("Printify webhook signature verification failed")
+        return {"status": "invalid_signature"}
 
     logger.info(f"Printify webhook: topic={topic}")
 

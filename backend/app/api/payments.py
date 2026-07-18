@@ -130,7 +130,10 @@ async def square_webhook(request: Request):
 
     signature_header = request.headers.get("x-square-hmacsha256", "")
     webhook_secret = getattr(settings, "SQUARE_WEBHOOK_SIGNATURE_KEY", "")
-    if webhook_secret and not _verify_square_signature(payload, signature_header, webhook_secret):
+    if not webhook_secret:
+        logger.error("SQUARE_WEBHOOK_SIGNATURE_KEY not configured — rejecting webhook")
+        return JSONResponse(status_code=503, content={"status": "error", "detail": "Webhook not configured"})
+    if not _verify_square_signature(payload, signature_header, webhook_secret):
         logger.warning("Square webhook signature verification failed")
         return {"status": "invalid_signature"}
 

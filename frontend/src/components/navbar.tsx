@@ -7,8 +7,8 @@ import Logo from "@/components/logo";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { items } = useCart();
-  const cartCount = items?.length || 0;
+  const { items, getItemCount } = useCart();
+  const cartCount = getItemCount();
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-40">

@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: teelab365
-      POSTGRES_PASSWORD: teelab365_secret
-      POSTGRES_DB: teelab365
+      POSTGRES_USER: ${POSTGRES_USER:-teelab365}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-teelab365}
     ports:
       - "5432:5432"
     volumes:
@@ -22,13 +22,20 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://teelab365:teelab365_secret@db:5432/teelab365
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-teelab365}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-teelab365}
       REDIS_URL: redis://redis:6379
-      SECRET_KEY: change-me-in-production
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      S3_BUCKET: ${S3_BUCKET}
+      SECRET_KEY: ${SECRET_KEY}
+      SQUARE_APPLICATION_ID: ${SQUARE_APPLICATION_ID}
+      SQUARE_ACCESS_TOKEN: ${SQUARE_ACCESS_TOKEN}
+      SQUARE_LOCATION_ID: ${SQUARE_LOCATION_ID}
+      SQUARE_ENVIRONMENT: ${SQUARE_ENVIRONMENT:-production}
+      SQUARE_WEBHOOK_SIGNATURE_KEY: ${SQUARE_WEBHOOK_SIGNATURE_KEY:-}
+      PRINTIFY_API_TOKEN: ${PRINTIFY_API_TOKEN}
+      PRINTIFY_SHOP_ID: ${PRINTIFY_SHOP_ID}
+      PRINTIFY_WEBHOOK_SECRET: ${PRINTIFY_WEBHOOK_SECRET:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      S3_BUCKET: ${S3_BUCKET:-}
     depends_on:
       - db
       - redis
@@ -38,8 +45,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
-      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     depends_on:
       - backend
 

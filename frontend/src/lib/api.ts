@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 class ApiClient {
   private baseUrl: string;
@@ -66,7 +66,7 @@ class ApiClient {
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ detail: "Upload failed" }));
-      throw new Error(error.detail);
+      throw new Error(error.detail || "Upload failed");
     }
 
     return res.json();

@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     SQUARE_APPLICATION_ID: str = ""
     SQUARE_ACCESS_TOKEN: str = ""
     SQUARE_LOCATION_ID: str = ""
-    SQUARE_ENVIRONMENT: str = "sandbox"
+    SQUARE_ENVIRONMENT: str = "production"
     SQUARE_WEBHOOK_SIGNATURE_KEY: str = ""
 
     PRINTIFY_API_TOKEN: str = ""
@@ -40,12 +40,11 @@ class Settings(BaseSettings):
     S3_REGION: str = "us-east-1"
 
     CORS_ORIGINS: list[str] = [
-        "http://localhost:3000", "http://localhost:3001",
-        "http://localhost:3002", "http://localhost:3003",
-        "http://localhost:3005",
         "https://www.tshirtcentral365.com",
         "https://tshirtcentral365.com",
         "https://api.tshirtcentral365.com",
+        "http://localhost:3000",
+        "http://localhost:3001",
     ]
 
     LOG_LEVEL: str = "INFO"

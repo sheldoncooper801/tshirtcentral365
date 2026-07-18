@@ -98,8 +98,8 @@ export default function OrderDetailPage() {
           <div className="bg-white rounded-xl border border-gray-100 p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-2">Fulfillment</h3>
             <div className="text-sm text-gray-600 space-y-1">
-              <div>Printify Status: <span className="font-medium capitalize">{order.printify_status}</span></div>
-              {order.printify_order_id && <div>Printify Order: <span className="font-mono text-xs">{order.printify_order_id}</span></div>}
+              <div>Status: <span className="font-medium capitalize">{order.printify_status}</span></div>
+              {order.printify_order_id && <div>Order ID: <span className="font-mono text-xs">{order.printify_order_id}</span></div>}
             </div>
           </div>
         )}
